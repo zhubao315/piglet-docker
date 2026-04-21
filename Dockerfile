@@ -136,6 +136,14 @@ COPY index.html ${PIGSTY_HOME}/index.html
 COPY postgres-init.sh ${PIGSTY_HOME}/postgres-init.sh
 
 # ============================================================
+# 创建 vibe 用户组
+# ============================================================
+RUN groupadd -g 1000 vibe \
+    && useradd -r -u 1000 -g vibe -s /bin/bash -d ${HOME} vibe \
+    && usermod -aG sudo vibe \
+    && usermod -aG postgres vibe
+
+# ============================================================
 # 设置权限
 # ============================================================
 RUN chmod +x ${PIGSTY_HOME}/start.sh \
@@ -144,14 +152,6 @@ RUN chmod +x ${PIGSTY_HOME}/start.sh \
     && chown -R vibe:vibe ${HOME} \
     && chown -R vibe:vibe ${PIGSTY_HOME} \
     && chown -R vibe:vibe /data
-
-# ============================================================
-# 创建 vibe 用户组并切换
-# ============================================================
-RUN groupadd -g 1000 vibe \
-    && useradd -r -u 1000 -g vibe -s /bin/bash -d ${HOME} vibe \
-    && usermod -aG sudo vibe \
-    && usermod -aG postgres vibe
 
 USER vibe
 WORKDIR ${HOME}
