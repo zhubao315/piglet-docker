@@ -149,7 +149,7 @@ RUN mkdir -p /run/nginx \
     && mkdir -p /var/lib/nginx/body \
     && mkdir -p /var/lib/nginx/tmp \
     && mkdir -p /var/lib/nginx/proxy \
-    && chown -R vibe:vibe /var/log/nginx /var/lib/nginx
+    && chown -R vibe:vibe /run/nginx /var/log/nginx /var/lib/nginx
 
 # ============================================================
 # 初始化 PostgreSQL (构建时完成)
