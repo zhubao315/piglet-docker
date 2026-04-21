@@ -71,9 +71,12 @@ RUN apt-get update && apt-get install -y \
     && ln -sf /usr/bin/python3 /usr/bin/python
 
 # ============================================================
-# 安装 Node.js 18.x
+# 安装 Node.js 18.x (使用 ppa)
 # ============================================================
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+RUN apt-get update \
+    && apt-get install -y software-properties-common \
+    && add-apt-repository -y ppa:chris-lea/node.js \
+    && apt-get update \
     && apt-get install -y nodejs \
     && npm install -g npm@latest
 
