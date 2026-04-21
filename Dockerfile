@@ -115,7 +115,9 @@ RUN mkdir -p /run/nginx \
     && mkdir -p /etc/nginx/ssl \
     && mkdir -p /var/log/nginx \
     && mkdir -p /var/lib/nginx/body \
-    && mkdir -p /var/lib/nginx/tmp
+    && mkdir -p /var/lib/nginx/tmp \
+    && mkdir -p /var/lib/nginx/proxy \
+    && chown -R vibe:vibe /var/log/nginx /var/lib/nginx
 
 # ============================================================
 # 创建应用目录
