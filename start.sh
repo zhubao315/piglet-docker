@@ -50,8 +50,7 @@ sleep 2
 
 # 启动 Nginx
 echo "[6/6] Starting Nginx..."
-mkdir -p /var/log/nginx /var/lib/nginx/body
-nginx -c /etc/nginx/nginx.conf
+nginx
 
 echo ""
 echo "=========================================="

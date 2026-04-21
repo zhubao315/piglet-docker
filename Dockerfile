@@ -112,7 +112,10 @@ RUN pip3 install --no-cache-dir \
 # 配置 Nginx
 # ============================================================
 RUN mkdir -p /run/nginx \
-    && mkdir -p /etc/nginx/ssl
+    && mkdir -p /etc/nginx/ssl \
+    && mkdir -p /var/log/nginx \
+    && mkdir -p /var/lib/nginx/body \
+    && mkdir -p /var/lib/nginx/tmp
 
 # ============================================================
 # 创建应用目录
