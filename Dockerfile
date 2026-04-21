@@ -71,13 +71,13 @@ RUN apt-get update && apt-get install -y \
     && ln -sf /usr/bin/python3 /usr/bin/python
 
 # ============================================================
-# 安装 Node.js (使用 nvm 方式 - 为 vibe 用户安装)
+# 安装 Node.js 18.x (直接下载二进制)
 # ============================================================
 RUN apt-get update \
     && apt-get install -y curl \
-    && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash \
-    && cp -r ~/.nvm ${HOME}/.nvm \
-    && chown -R vibe:vibe ${HOME}/.nvm
+    && curl -fsSL https://nodejs.org/dist/v18.20.0/node-v18.20.0-linux-x64.tar.gz -o /tmp/node.tar.gz \
+    && tar -xzf /tmp/node.tar.gz -C /usr/local --strip-components=1 \
+    && rm /tmp/node.tar.gz
 
 # ============================================================
 # 安装 Code-Server (官方脚本)
@@ -85,10 +85,10 @@ RUN apt-get update \
 RUN curl -fsSL https://code-server.dev/install.sh | sh
 
 # ============================================================
-# 预装 Claude Code CLI (使用 nvm)
+# 预装 Claude Code CLI
 # ============================================================
-RUN bash -c "source ${HOME}/.nvm/nvm.sh && nvm install 18 && nvm alias default 18 && nvm use default" \
-    && bash -c "source ${HOME}/.nvm/nvm.sh && npm config set registry https://registry.npmmirror.com && npm install -g @anthropic-ai/claude-code@latest"
+RUN npm config set registry https://registry.npmmirror.com \
+    && npm install -g @anthropic-ai/claude-code@latest
 
 # ============================================================
 # 安装 JupyterLab

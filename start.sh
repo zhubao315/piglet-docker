@@ -1,17 +1,13 @@
 #!/bin/bash
 set -e
 
-# 加载 nvm
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && bash -c "source $NVM_DIR/nvm.sh"
-
 echo "=========================================="
 echo "  Piglet Runtime - Starting Services"
 echo "=========================================="
 
 # 检查 Claude Code
 if command -v claude &> /dev/null; then
-    echo "[0/5] Claude Code: $(claude --version 2>/dev/null || echo 'installed')"
+    echo "[0/5] Claude Code: installed"
 else
     echo "[0/5] Claude Code: not found (optional)"
 fi
