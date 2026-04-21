@@ -5,33 +5,38 @@ echo "=========================================="
 echo "  Piglet Runtime - Starting Services"
 echo "=========================================="
 
-# 安装 Claude Code (如果未安装)
-if ! command -v claude &> /dev/null; then
-    echo "[0/7] Installing Claude Code..."
-    npm config set registry https://registry.npmmirror.com
-    npm install -g @anthropic-ai/claude-code@latest || true
+# 检查 Claude Code
+if command -v claude &> /dev/null; then
+    echo "[0/6] Claude Code: $(claude --version 2>/dev/null || echo 'installed')"
+else
+    echo "[0/6] Claude Code: not found (optional)"
 fi
 
 # 初始化 PostgreSQL
-echo "[1/7] Initializing PostgreSQL..."
-service postgresql start
-sudo -u postgres psql -c "ALTER USER postgres PASSWORD '${POSTGRES_PASSWORD:-Vibe.Coding}';" 2>/dev/null || true
-sudo -u postgres createdb vibe 2>/dev/null || true
-service postgresql stop
+echo "[1/6] Initializing PostgreSQL..."
+chmod 700 /var/lib/postgresql/data 2>/dev/null || mkdir -p /var/lib/postgresql/data && chmod 700 /var/lib/postgresql/data
+chown postgres:postgres /var/lib/postgresql/data
+su - postgres -c "/usr/lib/postgresql/*/bin/initdb -D /var/lib/postgresql/data" 2>/dev/null || true
+su - postgres -c "/usr/lib/postgresql/*/bin/pg_ctl -D /var/lib/postgresql/data -l /var/log/postgresql/logfile start" || true
+sleep 3
+su - postgres -c "psql -c \"ALTER USER postgres PASSWORD '${POSTGRES_PASSWORD:-Vibe.Coding}';\"" 2>/dev/null || true
+su - postgres -c "createdb vibe" 2>/dev/null || true
+su - postgres -c "psql -c 'CREATE EXTENSION IF NOT EXISTS vector;'" 2>/dev/null || true
+su - postgres -c "/usr/lib/postgresql/*/bin/pg_ctl -D /var/lib/postgresql/data stop" 2>/dev/null || true
 
 # 启动 PostgreSQL (后台)
-echo "[2/7] Starting PostgreSQL..."
+echo "[2/6] Starting PostgreSQL..."
 su - postgres -c "/usr/lib/postgresql/*/bin/postgres -D /var/lib/postgresql/data" &
 sleep 2
 
 # 启动 Claude API 代理
-echo "[3/7] Starting Claude API Proxy..."
+echo "[3/6] Starting Claude API Proxy..."
 cd ${PIGSTY_HOME}
-python proxy.py &
+python3 proxy.py &
 sleep 2
 
 # 启动 Code-Server
-echo "[4/7] Starting VS Code Server..."
+echo "[4/6] Starting VS Code Server..."
 code-server \
     --port ${CODE_PORT} \
     --password ${CODE_PASSWORD} \
@@ -41,7 +46,7 @@ code-server \
 sleep 2
 
 # 启动 JupyterLab
-echo "[5/7] Starting JupyterLab..."
+echo "[5/6] Starting JupyterLab..."
 cd /data/jupyter
 ${PIGSTY_HOME}/../jupytervenv/bin/jupyter lab \
     --ip=0.0.0.0 \
@@ -53,7 +58,7 @@ ${PIGSTY_HOME}/../jupytervenv/bin/jupyter lab \
 sleep 2
 
 # 启动 Nginx
-echo "[6/7] Starting Nginx..."
+echo "[6/6] Starting Nginx..."
 nginx
 
 echo ""

@@ -71,9 +71,11 @@ RUN apt-get update && apt-get install -y \
     && ln -sf /usr/bin/python3 /usr/bin/python
 
 # ============================================================
-# 安装 Node.js
+# 安装 Node.js 18.x
 # ============================================================
-RUN apt-get update && apt-get install -y nodejs npm
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs \
+    && npm install -g npm@latest
 
 # ============================================================
 # 安装 Code-Server (官方脚本)
@@ -81,11 +83,14 @@ RUN apt-get update && apt-get install -y nodejs npm
 RUN curl -fsSL https://code-server.dev/install.sh | sh
 
 # ============================================================
-# 安装 Claude Code CLI (通过官方安装脚本)
+# 预装 Claude Code CLI (全局安装到 root 目录)
 # ============================================================
-RUN curl -fsSL https://download.cli.ai/zhubao/install.sh | sh || \
-    curl -fsSL https://files.claude.ai/claude-code/install.sh | sh || \
-    echo "Claude Code will be installed at runtime"
+RUN mkdir -p /opt/claude-bin \
+    && npm config set registry https://registry.npmmirror.com \
+    && npm install -g @anthropic-ai/claude-code@latest \
+    && cp $(npm root -g)/@anthropic-ai/claude-code/bin/claude /opt/claude-bin/ \
+    && chmod +x /opt/claude-bin/claude \
+    && ln -sf /opt/claude-bin/claude /usr/local/bin/claude
 
 # ============================================================
 # 安装 JupyterLab
