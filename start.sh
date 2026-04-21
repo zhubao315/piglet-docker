@@ -14,29 +14,28 @@ fi
 
 # 启动 PostgreSQL (后台)
 echo "[1/5] Starting PostgreSQL..."
-su - postgres -c "/usr/lib/postgresql/*/bin/postgres -D /var/lib/postgresql/data" &
+su - postgres -c "/usr/lib/postgresql/*/bin/postgres -D /var/lib/postgresql/data -c password_encryption=scram-sha-256" &
 sleep 3
 
 # 配置 PostgreSQL
 echo "[2/5] Configuring PostgreSQL..."
-su - postgres -c "psql -c \"ALTER USER postgres PASSWORD '${POSTGRES_PASSWORD:-Vibe.Coding}';\"" 2>/dev/null || true
+su - postgres -c "psql -c \"ALTER USER postgres WITH PASSWORD '${POSTGRES_PASSWORD:-Vibe.Coding}';\"" 2>/dev/null || true
 su - postgres -c "createdb vibe" 2>/dev/null || true
 su - postgres -c "psql -c 'CREATE EXTENSION IF NOT EXISTS vector;'" 2>/dev/null || true
 
 # 启动 Claude API 代理
 echo "[3/5] Starting Claude API Proxy..."
 cd ${PIGSTY_HOME}
+pip3 install requests -q
 python3 proxy.py &
 sleep 2
 
-# 启动 Code-Server
+# 启动 Code-Server (使用配置文件中的密码)
 echo "[4/5] Starting VS Code Server..."
-code-server \
-    --port ${CODE_PORT} \
-    --password ${CODE_PASSWORD} \
-    --auth password \
-    --user-data-dir /data/code \
-    &
+mkdir -p /data/code
+chown vibe:vibe /data/code
+# 使用配置文件 /opt/piglet/code-server-config.yaml
+code-server --config ${PIGSTY_HOME}/code-server-config.yaml &
 sleep 2
 
 # 启动 JupyterLab
@@ -46,13 +45,13 @@ ${PIGSTY_HOME}/../jupytervenv/bin/jupyter lab \
     --ip=0.0.0.0 \
     --port=${JUPYTER_PORT} \
     --no-browser \
-    --NotebookApp.password="${JUPYTER_PASSWORD}" \
-    --NotebookApp.allow_origin='*' \
     &
 sleep 2
 
 # 启动 Nginx
-nginx
+echo "[6/6] Starting Nginx..."
+mkdir -p /var/log/nginx /var/lib/nginx/body
+nginx -c /etc/nginx/nginx.conf
 
 echo ""
 echo "=========================================="
