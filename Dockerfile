@@ -71,14 +71,12 @@ RUN apt-get update && apt-get install -y \
     && ln -sf /usr/bin/python3 /usr/bin/python
 
 # ============================================================
-# 安装 Node.js 18.x (使用 ppa)
+# 安装 Node.js (使用 nvm 方式)
 # ============================================================
 RUN apt-get update \
-    && apt-get install -y software-properties-common \
-    && add-apt-repository -y ppa:chris-lea/node.js \
-    && apt-get update \
-    && apt-get install -y nodejs \
-    && npm install -g npm@latest
+    && apt-get install -y curl \
+    && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash \
+    && bash -c "source ~/.nvm/nvm.sh && nvm install 18 && nvm alias default 18 && nvm use default"
 
 # ============================================================
 # 安装 Code-Server (官方脚本)
@@ -86,14 +84,9 @@ RUN apt-get update \
 RUN curl -fsSL https://code-server.dev/install.sh | sh
 
 # ============================================================
-# 预装 Claude Code CLI (全局安装到 root 目录)
+# 预装 Claude Code CLI (使用 nvm)
 # ============================================================
-RUN mkdir -p /opt/claude-bin \
-    && npm config set registry https://registry.npmmirror.com \
-    && npm install -g @anthropic-ai/claude-code@latest \
-    && cp $(npm root -g)/@anthropic-ai/claude-code/bin/claude /opt/claude-bin/ \
-    && chmod +x /opt/claude-bin/claude \
-    && ln -sf /opt/claude-bin/claude /usr/local/bin/claude
+RUN bash -c "source ~/.nvm/nvm.sh && npm config set registry https://registry.npmmirror.com && npm install -g @anthropic-ai/claude-code@latest"
 
 # ============================================================
 # 安装 JupyterLab

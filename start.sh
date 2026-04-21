@@ -1,6 +1,10 @@
 #!/bin/bash
 set -e
 
+# 加载 nvm
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && bash -c "source $NVM_DIR/nvm.sh"
+
 echo "=========================================="
 echo "  Piglet Runtime - Starting Services"
 echo "=========================================="
