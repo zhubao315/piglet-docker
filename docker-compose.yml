@@ -1,0 +1,28 @@
+name: piglet
+services:
+  piglet:
+    image: zhubao315/piglet:latest
+    container_name: piglet
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+      - "8888:8888"
+      - "5432:5432"
+    environment:
+      - VLLM_BASE_URL=http://192.168.1.3:808/v1/chat/completions
+      - DEFAULT_MODEL=qwen3.6-35b-a3b
+      - API_PORT=8080
+      - CODE_PORT=8443
+      - JUPYTER_PORT=8888
+      - PG_PORT=5432
+      - CODE_PASSWORD=Vibe.Coding
+      - JUPYTER_PASSWORD=Vibe.Coding
+      - POSTGRES_PASSWORD=Vibe.Coding
+    volumes:
+      - piglet-data:/data
+      - piglet-workspace:/data/workspace
+    restart: unless-stopped
+
+volumes:
+  piglet-data:
+  piglet-workspace:

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Piglet Runtime - AI Coding Sandbox</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .subtitle {
+            color: #a0a0a0;
+            font-size: 1.2em;
+        }
+        .services {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 30px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        .card h2 {
+            font-size: 1.4em;
+            margin-bottom: 10px;
+            color: #00d4ff;
+        }
+        .card p {
+            color: #a0a0a0;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .card a {
+            display: inline-block;
+            padding: 10px 24px;
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+        .card a:hover {
+            opacity: 0.8;
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 40px;
+        }
+        .feature {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+        }
+        .feature-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        .feature h3 {
+            font-size: 1em;
+            color: #00d4ff;
+            margin-bottom: 5px;
+        }
+        .feature p {
+            font-size: 0.9em;
+            color: #a0a0a0;
+        }
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 20px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Piglet Runtime</h1>
+            <p class="subtitle">AI Coding Sandbox - 云端编码沙箱</p>
+        </header>
+
+        <div class="services">
+            <div class="card">
+                <h2>VS Code</h2>
+                <p>浏览器版 Visual Studio Code，完整的 IDE 体验</p>
+                <a href="/code/">打开 VS Code</a>
+            </div>
+
+            <div class="card">
+                <h2>JupyterLab</h2>
+                <p>交互式 Python 编程环境，支持 Notebook</p>
+                <a href="/jupyter/">打开 JupyterLab</a>
+            </div>
+
+            <div class="card">
+                <h2>Claude API</h2>
+                <p>Claude AI 编程接口，支持 OpenAI 兼容格式</p>
+                <a href="/v1/messages">API 文档</a>
+            </div>
+
+            <div class="card">
+                <h2>PostgreSQL</h2>
+                <p>强大的关系型数据库，支持向量搜索</p>
+                <a href="/health">数据库状态</a>
+            </div>
+        </div>
+
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">🤖</div>
+                <h3>AI 编码</h3>
+                <p>Claude Code 集成</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🐘</div>
+                <h3>PostgreSQL</h3>
+                <p>507+ 扩展支持</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">💾</div>
+                <h3>持久存储</h3>
+                <p>数据库存储文件</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">⏱️</div>
+                <h3>时光机</h3>
+                <p>一键回滚</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🌐</div>
+                <h3>一键部署</h3>
+                <p>Nginx 集成</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📊</div>
+                <h3>全栈监控</h3>
+                <p>Grafana 大盘</p>
+            </div>
+        </div>
+
+        <footer>
+            <p>Piglet Runtime - Powered by Pigsty & Claude</p>
+        </footer>
+    </div>
+</body>
+</html>

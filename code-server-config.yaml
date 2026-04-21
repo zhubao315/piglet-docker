@@ -1,0 +1,6 @@
+bind-addr: 0.0.0.0:8443
+auth: password
+password: Vibe.Coding
+cert: false
+user-data-dir: /data/code
+extensions-dir: /data/code/extensions
