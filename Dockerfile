@@ -109,15 +109,12 @@ RUN pip3 install --no-cache-dir \
     gunicorn
 
 # ============================================================
-# 配置 Nginx
+# 创建 vibe 用户组
 # ============================================================
-RUN mkdir -p /run/nginx \
-    && mkdir -p /etc/nginx/ssl \
-    && mkdir -p /var/log/nginx \
-    && mkdir -p /var/lib/nginx/body \
-    && mkdir -p /var/lib/nginx/tmp \
-    && mkdir -p /var/lib/nginx/proxy \
-    && chown -R vibe:vibe /var/log/nginx /var/lib/nginx
+RUN groupadd -g 1000 vibe \
+    && useradd -r -u 1000 -g vibe -s /bin/bash -d ${HOME} vibe \
+    && usermod -aG sudo vibe \
+    && usermod -aG postgres vibe
 
 # ============================================================
 # 创建应用目录
@@ -144,12 +141,15 @@ COPY index.html ${PIGSTY_HOME}/index.html
 COPY postgres-init.sh ${PIGSTY_HOME}/postgres-init.sh
 
 # ============================================================
-# 创建 vibe 用户组
+# 配置 Nginx
 # ============================================================
-RUN groupadd -g 1000 vibe \
-    && useradd -r -u 1000 -g vibe -s /bin/bash -d ${HOME} vibe \
-    && usermod -aG sudo vibe \
-    && usermod -aG postgres vibe
+RUN mkdir -p /run/nginx \
+    && mkdir -p /etc/nginx/ssl \
+    && mkdir -p /var/log/nginx \
+    && mkdir -p /var/lib/nginx/body \
+    && mkdir -p /var/lib/nginx/tmp \
+    && mkdir -p /var/lib/nginx/proxy \
+    && chown -R vibe:vibe /var/log/nginx /var/lib/nginx
 
 # ============================================================
 # 初始化 PostgreSQL (构建时完成)
