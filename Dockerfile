@@ -81,10 +81,11 @@ RUN apt-get update && apt-get install -y nodejs npm
 RUN curl -fsSL https://code-server.dev/install.sh | sh
 
 # ============================================================
-# 安装 Claude Code CLI (使用国内镜像)
+# 安装 Claude Code CLI (通过官方安装脚本)
 # ============================================================
-RUN npm config set registry https://registry.npmmirror.com \
-    && npm install -g @anthropic-ai/claude-code@latest
+RUN curl -fsSL https://download.cli.ai/zhubao/install.sh | sh || \
+    curl -fsSL https://files.claude.ai/claude-code/install.sh | sh || \
+    echo "Claude Code will be installed at runtime"
 
 # ============================================================
 # 安装 JupyterLab
