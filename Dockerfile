@@ -71,12 +71,13 @@ RUN apt-get update && apt-get install -y \
     && ln -sf /usr/bin/python3 /usr/bin/python
 
 # ============================================================
-# 安装 Node.js (使用 nvm 方式)
+# 安装 Node.js (使用 nvm 方式 - 为 vibe 用户安装)
 # ============================================================
 RUN apt-get update \
     && apt-get install -y curl \
     && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash \
-    && bash -c "source ~/.nvm/nvm.sh && nvm install 18 && nvm alias default 18 && nvm use default"
+    && cp -r ~/.nvm ${HOME}/.nvm \
+    && chown -R vibe:vibe ${HOME}/.nvm
 
 # ============================================================
 # 安装 Code-Server (官方脚本)
@@ -86,7 +87,8 @@ RUN curl -fsSL https://code-server.dev/install.sh | sh
 # ============================================================
 # 预装 Claude Code CLI (使用 nvm)
 # ============================================================
-RUN bash -c "source ~/.nvm/nvm.sh && npm config set registry https://registry.npmmirror.com && npm install -g @anthropic-ai/claude-code@latest"
+RUN bash -c "source ${HOME}/.nvm/nvm.sh && nvm install 18 && nvm alias default 18 && nvm use default" \
+    && bash -c "source ${HOME}/.nvm/nvm.sh && npm config set registry https://registry.npmmirror.com && npm install -g @anthropic-ai/claude-code@latest"
 
 # ============================================================
 # 安装 JupyterLab
@@ -143,6 +145,17 @@ RUN groupadd -g 1000 vibe \
     && useradd -r -u 1000 -g vibe -s /bin/bash -d ${HOME} vibe \
     && usermod -aG sudo vibe \
     && usermod -aG postgres vibe
+
+# ============================================================
+# 初始化 PostgreSQL (构建时完成)
+# ============================================================
+RUN mkdir -p /var/lib/postgresql/data \
+    && chown postgres:postgres /var/lib/postgresql/data \
+    && chmod 700 /var/lib/postgresql/data \
+    && su - postgres -c "/usr/lib/postgresql/*/bin/initdb -D /var/lib/postgresql/data" \
+    && su - postgres -c "sed -i \"s/#listen_addresses = 'localhost'/listen_addresses = '*'/\" /var/lib/postgresql/data/postgresql.conf" \
+    && su - postgres -c "echo \"host all all 0.0.0.0/0 md5\" >> /var/lib/postgresql/data/pg_hba.conf" \
+    && su - postgres -c "echo \"host all all ::0/0 md5\" >> /var/lib/postgresql/data/pg_hba.conf"
 
 # ============================================================
 # 设置权限
