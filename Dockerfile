@@ -181,15 +181,15 @@ WORKDIR ${HOME}
 RUN ${PIGSTY_HOME}/../jupytervenv/bin/python -m ipykernel install --user --name=python3 --display-name="Python 3"
 
 # ============================================================
-# 暴露端口
+# 暴露端口 - 所有服务通过 Nginx 代理在 8080 端口
 # ============================================================
-EXPOSE ${API_PORT} ${CODE_PORT} ${JUPYTER_PORT} ${PG_PORT}
+EXPOSE 8080
 
 # ============================================================
 # 健康检查
 # ============================================================
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD curl -f http://localhost:${API_PORT}/health 2>/dev/null || exit 1
+    CMD curl -f http://localhost:8080/health 2>/dev/null || exit 1
 
 # ============================================================
 # 启动脚本
